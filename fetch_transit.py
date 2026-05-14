@@ -50,6 +50,10 @@ def main():
     now = int(time.time())
     departures = []
 
+    # Debug: track what stop IDs we're seeing in the wild
+    seen_stop_ids = {}
+    total_stop_updates = 0
+
     for entity in feed.entity:
         if not entity.HasField("trip_update"):
             continue
@@ -60,7 +64,11 @@ def main():
             continue  # trip not in our static (e.g. added trip we don't recognize)
 
         for stu in tu.stop_time_update:
-            if stu.stop_id not in OUR_STOP_IDS:
+            total_stop_updates += 1
+            sid = stu.stop_id
+            seen_stop_ids[sid] = seen_stop_ids.get(sid, 0) + 1
+
+            if sid not in OUR_STOP_IDS:
                 continue
 
             # Prefer departure time, fall back to arrival
@@ -104,6 +112,24 @@ def main():
         json.dump(out, f, indent=2)
 
     print(f"Wrote {len(visible)} departures (of {len(departures)} seen).")
+
+    # === DEBUG ===
+    # If we got zero, dump some sample stop IDs from the realtime feed so we can
+    # compare them against our_stop_ids
+    print(f"\n--- DEBUG ---")
+    print(f"Total stop_time_updates seen: {total_stop_updates}")
+    print(f"Unique stop IDs seen in feed: {len(seen_stop_ids)}")
+    print(f"Our stop IDs (looking for these): {sorted(OUR_STOP_IDS)}")
+    if seen_stop_ids:
+        # Show a sample of what we DID see — first 20
+        sample = sorted(seen_stop_ids.items(), key=lambda x: -x[1])[:20]
+        print(f"Top 20 stop IDs in feed (id, count):")
+        for sid, count in sample:
+            print(f"  {sid!r}: {count}")
+    # Are any of our codes (the public-facing numbers) showing up instead?
+    our_codes = {STOPS[sid]["code"] for sid in OUR_STOP_IDS}
+    matches_by_code = [c for c in our_codes if c in seen_stop_ids]
+    print(f"Our stop CODES that appear in realtime feed: {matches_by_code}")
 
 
 if __name__ == "__main__":
