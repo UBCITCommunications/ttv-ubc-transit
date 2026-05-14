@@ -1,0 +1,41 @@
+name: Rebuild UBC Exchange Schedule
+
+on:
+  schedule:
+    - cron: '0 9 * * *'    # daily at 09:00 UTC (~02:00 PT) — quiet hour
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'build_schedule.py'
+      - '.github/workflows/rebuild-schedule.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download latest TransLink GTFS static
+        run: |
+          curl -sSL -o gtfs.zip "https://gtfs-static.translink.ca/gtfs/google_transit.zip"
+          mkdir -p gtfs
+          unzip -q gtfs.zip -d gtfs
+
+      - name: Build schedule.json
+        run: python build_schedule.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add schedule.json
+          git diff --staged --quiet || git commit -m "Update schedule $(date -u +%FT%TZ)"
+          git push
