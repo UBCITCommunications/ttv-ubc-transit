@@ -36,14 +36,13 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
   }
-  .meta {
-    font-size: 0.85vw;
-    color: #484f58;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+  .clock {
+    font-size: 1.4vw;
+    color: #c9d1d9;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
   }
 
-  /* Column headers */
   .col-headers, .row {
     display: grid;
     grid-template-columns: 7vw 1fr 6vw 8vw;
@@ -63,26 +62,17 @@
   .col-headers .min,
   .col-headers .bay { text-align: right; }
 
-  .rows {
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .row {
-    border-bottom: 1px solid #161b22;
-    transition: opacity 0.3s;
-  }
-  .row.soon { /* under 10 min — emphasize */ }
-  .row.fading { opacity: 0.4; }
+  .rows { flex: 1; overflow: hidden; }
+  .row { border-bottom: 1px solid #161b22; }
 
   .route-num {
     font-size: 2.6vw;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
-  .route-num.b { color: #58a6ff; }   /* B-Line */
-  .route-num.r { color: #f85149; }   /* Rapid */
-  .route-num.n { color: #d29922; }   /* Night */
+  .route-num.b { color: #58a6ff; }
+  .route-num.r { color: #f85149; }
+  .route-num.n { color: #d29922; }
 
   .headsign {
     font-size: 1.7vw;
@@ -141,7 +131,7 @@
     <div class="subtitle">Next Departures</div>
     <div class="title">UBC Exchange</div>
   </div>
-  <div class="meta" id="clock">--:--</div>
+  <div class="clock" id="clock">--:--</div>
 </header>
 
 <div class="col-headers">
@@ -156,69 +146,84 @@
 </div>
 
 <footer>
-  <div id="status">Live · refreshes every minute</div>
-  <div id="updated">Data fetched —</div>
+  <div>Scheduled times · Vancouver local</div>
+  <div id="schedule-info">—</div>
 </footer>
 
 <script>
-const DATA_URL  = 'transit.json';
-const RELOAD_MS = 60 * 1000;          // re-read JSON every minute
-const TICK_MS   = 30 * 1000;          // recompute "minutes away" every 30 sec
-const MAX_ROWS  = 12;                 // how many to show
+const DATA_URL    = 'schedule.json';
+const RELOAD_MS   = 6 * 60 * 60 * 1000;   // re-fetch schedule every 6 hours
+const TICK_MS     = 30 * 1000;            // re-render every 30 sec
+const MAX_ROWS    = 12;
+const HIDE_UNDER  = 1;   // hide buses leaving in less than this many minutes
+const SHOW_AHEAD  = 90;  // don't show buses more than this many minutes out
 
-let data = null;
+let schedule = null;
 
-async function loadData() {
+async function loadSchedule() {
   try {
     const res = await fetch(DATA_URL + '?t=' + Date.now());
-    data = await res.json();
+    schedule = await res.json();
     render();
   } catch (e) {
-    console.error('Load failed:', e);
+    console.error('Schedule load failed:', e);
   }
 }
 
+function getTodayBucket() {
+  const d = new Date().getDay(); // 0 = Sun, 6 = Sat
+  if (d === 0) return 'sunday';
+  if (d === 6) return 'saturday';
+  return 'weekday';
+}
+
+function nowMinuteOfDay() {
+  const n = new Date();
+  return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
+}
+
 function render() {
-  if (!data || !data.departures) {
+  if (!schedule) {
     document.getElementById('rows').innerHTML = '<div class="empty">Loading…</div>';
     return;
   }
 
-  const now = Date.now() / 1000;
-  // Recompute minutes from the eta_unix timestamps so the board ticks down between fetches
-  const live = data.departures
-    .map(d => ({ ...d, min: Math.round((d.eta_unix - now) / 60) }))
-    .filter(d => d.min >= 5 && d.min <= 60)
+  const bucket = getTodayBucket();
+  const todays = schedule.schedule[bucket] || [];
+  const nowMin = nowMinuteOfDay();
+
+  const upcoming = todays
+    .map(d => ({ ...d, minutesAway: d.m - nowMin }))
+    .filter(d => d.minutesAway >= HIDE_UNDER && d.minutesAway <= SHOW_AHEAD)
+    .sort((a, b) => a.minutesAway - b.minutesAway)
     .slice(0, MAX_ROWS);
 
   const rows = document.getElementById('rows');
-  if (live.length === 0) {
-    rows.innerHTML = '<div class="empty">No departures in the next hour.</div>';
+  if (upcoming.length === 0) {
+    rows.innerHTML = `<div class="empty">No scheduled departures in the next ${SHOW_AHEAD} minutes.</div>`;
   } else {
-    rows.innerHTML = live.map(d => buildRow(d)).join('');
+    rows.innerHTML = upcoming.map(buildRow).join('');
   }
 
-  // Footer
-  const fetched = new Date(data.generated_at);
-  document.getElementById('updated').textContent =
-    'Data fetched · ' + fetched.toLocaleTimeString('en-CA', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('schedule-info').textContent =
+    bucket.charAt(0).toUpperCase() + bucket.slice(1) + ' schedule';
 }
 
 function buildRow(d) {
-  // Color hints by route prefix
   let routeClass = '';
-  if (d.route === '99' || d.route === '84' || d.route === '44') routeClass = 'b';
-  else if (d.route.startsWith('R'))                              routeClass = 'r';
-  else if (d.route.startsWith('N'))                              routeClass = 'n';
+  if (d.r === '99' || d.r === '84' || d.r === '44') routeClass = 'b';
+  else if (d.r.startsWith('R'))                      routeClass = 'r';
+  else if (d.r.startsWith('N'))                      routeClass = 'n';
 
-  const soonClass = d.min < 10 ? ' soon' : '';
+  const min = Math.round(d.minutesAway);
+  const soonClass = min < 10 ? ' soon' : '';
 
   return `
     <div class="row${soonClass}">
-      <div class="route-num ${routeClass}">${escapeHtml(d.route)}</div>
-      <div class="headsign">${escapeHtml(d.headsign || '')}</div>
-      <div class="bay">Bay ${escapeHtml(d.bay || '?')}</div>
-      <div class="min">${d.min}<span class="unit">min</span></div>
+      <div class="route-num ${routeClass}">${escapeHtml(d.r)}</div>
+      <div class="headsign">${escapeHtml(d.h || '')}</div>
+      <div class="bay">Bay ${escapeHtml(d.b || '?')}</div>
+      <div class="min">${min}<span class="unit">min</span></div>
     </div>
   `;
 }
@@ -232,11 +237,11 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-loadData();
+loadSchedule();
 updateClock();
-setInterval(loadData, RELOAD_MS);
-setInterval(render, TICK_MS);     // re-render with fresh minute counts
-setInterval(updateClock, 30000);
+setInterval(loadSchedule, RELOAD_MS);
+setInterval(render,       TICK_MS);
+setInterval(updateClock,  30000);
 </script>
 </body>
 </html>
