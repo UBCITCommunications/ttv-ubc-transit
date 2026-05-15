@@ -1,22 +1,14 @@
 {
-  "generated_at": "2026-05-15T16:27:57.505345+00:00",
+  "generated_at": "2026-05-15T18:06:00.898199+00:00",
   "departures": [
     {
-      "route": "68",
-      "headsign": "68 Wesbrook Village",
+      "route": "33",
+      "headsign": "29th Ave Station",
       "bay": "1",
       "stop_code": "60158",
-      "eta_unix": 1778863200,
-      "min": 12
-    },
-    {
-      "route": "25",
-      "headsign": "Brentwood Station",
-      "bay": "6",
-      "stop_code": "60164",
-      "eta_unix": 1778863380,
-      "min": 15
+      "eta_unix": 1778868726,
+      "min": 6
     }
   ],
-  "total_seen": 2
+  "total_seen": 3
 }
