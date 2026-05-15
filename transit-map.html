@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UBC Transit — Live Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 3vh 3vw 2vh 3vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #21262d;
+  }
+  .subhead {
+    font-size: 0.85vw;
+    color: #7d8590;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.5vh;
+  }
+  .heading {
+    font-size: 2.2vw;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .meta {
+    font-size: 0.8vw;
+    color: #484f58;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 26vw;
+    min-height: 0;
+  }
+
+  #map {
+    background: #0d1117;
+    height: 100%;
+  }
+
+  /* Leaflet defaults are bright — keep our dark overlay */
+  .leaflet-container { background: #0d1117; outline: 0; }
+  .leaflet-control-attribution {
+    background: rgba(13, 17, 23, 0.7) !important;
+    color: #7d8590 !important;
+    font-size: 0.6vw !important;
+  }
+  .leaflet-control-attribution a { color: #58a6ff !important; }
+
+  .vehicle-marker {
+    background: #58a6ff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0.6vw rgba(88, 166, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d1117;
+    font-weight: 700;
+    font-size: 0.7vw;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1;
+  }
+  .vehicle-marker.r { background: #f85149; box-shadow: 0 0 0.6vw rgba(248, 81, 73, 0.8); color: #fff; }
+  .vehicle-marker.b { background: #58a6ff; }
+  .vehicle-marker.n { background: #d29922; }
+
+  /* RIGHT panel — alerts */
+  .alerts {
+    background: #010409;
+    border-left: 1px solid #21262d;
+    padding: 3vh 1.8vw;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+  }
+  .alerts-label {
+    font-size: 0.85vw;
+    color: #7d8590;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 3vh;
+  }
+  .alert {
+    padding-bottom: 2.5vh;
+    margin-bottom: 2.5vh;
+    border-bottom: 1px solid #21262d;
+  }
+  .alert:last-child { border-bottom: 0; }
+  .alert-routes {
+    display: flex;
+    gap: 0.5vw;
+    margin-bottom: 1vh;
+    flex-wrap: wrap;
+  }
+  .route-pill {
+    background: #21262d;
+    color: #e6edf3;
+    padding: 0.3vh 0.8vw;
+    border-radius: 0.3vw;
+    font-size: 0.95vw;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .route-pill.b { background: #1f4470; color: #fff; }
+  .route-pill.r { background: #6b1a17; color: #fff; }
+  .route-pill.n { background: #5c4517; color: #fff; }
+
+  .alert-header {
+    font-size: 1.05vw;
+    font-weight: 500;
+    color: #e6edf3;
+    margin-bottom: 0.8vh;
+    line-height: 1.3;
+  }
+  .alert-desc {
+    font-size: 0.9vw;
+    color: #8b949e;
+    line-height: 1.5;
+  }
+
+  .all-clear {
+    margin-top: 8vh;
+    text-align: center;
+    color: #484f58;
+  }
+  .all-clear .check {
+    width: 4vw;
+    height: 4vw;
+    border-radius: 50%;
+    background: #1f4427;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2vh;
+    color: #2ea043;
+    font-size: 2vw;
+  }
+  .all-clear-text {
+    font-size: 1.1vw;
+    color: #c9d1d9;
+  }
+  .all-clear-sub {
+    font-size: 0.8vw;
+    margin-top: 1vh;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="subhead">Live Transit · Routes Serving UBC</div>
+    <div class="heading">UBC Transit Map</div>
+  </div>
+  <div class="meta" id="updated">—</div>
+</header>
+
+<main>
+  <div id="map"></div>
+  <div class="alerts" id="alerts"></div>
+</main>
+
+<script>
+const STATIC_URL = 'transit-map.json';
+const LIVE_URL   = 'transit-live.json';
+const RELOAD_MS  = 60 * 1000;       // re-read live JSON every minute
+
+// Route colors — match across map & alerts panel
+function routeClass(short) {
+  if (short === '99' || short === '84' || short === '44') return 'b'; // B-Line blueish
+  if (short.startsWith('R')) return 'r';
+  if (short.startsWith('N')) return 'n';
+  return '';
+}
+
+let map;
+let routeLines = {};
+let vehicleLayer;
+
+async function init() {
+  // 1. Build map
+  map = L.map('map', {
+    zoomControl: false,
+    attributionControl: true,
+  }).setView([49.262, -123.16], 12);
+
+  // CARTO Dark Matter — great for dark UI
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap, © CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // 2. Load static (routes + stops)
+  try {
+    const res = await fetch(STATIC_URL);
+    const data = await res.json();
+    drawRoutes(data.routes);
+  } catch (e) {
+    console.error('Static load failed:', e);
+  }
+
+  // 3. Live data — vehicles & alerts
+  vehicleLayer = L.layerGroup().addTo(map);
+  loadLive();
+  setInterval(loadLive, RELOAD_MS);
+}
+
+function drawRoutes(routes) {
+  // Map of route short -> color
+  const colors = {
+    '99':  '#58a6ff', '84':  '#58a6ff', '44':  '#58a6ff',
+    'R4':  '#f85149',
+    'N17': '#d29922',
+    '25':  '#a371f7', '33':  '#7ee787', '49':  '#f0883e', '68':  '#79c0ff',
+  };
+
+  for (const [short, info] of Object.entries(routes)) {
+    if (!info.path || info.path.length < 2) continue;
+    const line = L.polyline(info.path, {
+      color: colors[short] || '#8b949e',
+      weight: 2,
+      opacity: 0.55,
+      smoothFactor: 1.5,
+    }).addTo(map);
+    routeLines[short] = line;
+  }
+}
+
+async function loadLive() {
+  try {
+    const res = await fetch(LIVE_URL + '?t=' + Date.now());
+    const data = await res.json();
+    renderVehicles(data.vehicles || []);
+    renderAlerts(data.alerts || []);
+
+    const fetched = new Date(data.generated_at);
+    document.getElementById('updated').textContent =
+      'Updated · ' + fetched.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    console.error('Live data load failed:', e);
+  }
+}
+
+function renderVehicles(vehicles) {
+  vehicleLayer.clearLayers();
+  for (const v of vehicles) {
+    const cls = routeClass(v.r);
+    const icon = L.divIcon({
+      className: '',
+      html: `<div class="vehicle-marker ${cls}" style="width:1.8vw;height:1.8vw;">${escapeHtml(v.r)}</div>`,
+      iconSize:   [0, 0],   // we size via the inner div
+      iconAnchor: [0, 0],
+    });
+    L.marker([v.lat, v.lon], { icon }).addTo(vehicleLayer);
+  }
+}
+
+function renderAlerts(alerts) {
+  const container = document.getElementById('alerts');
+  if (alerts.length === 0) {
+    container.innerHTML = `
+      <div class="alerts-label">Service Alerts</div>
+      <div class="all-clear">
+        <div class="check">✓</div>
+        <div class="all-clear-text">No active alerts</div>
+        <div class="all-clear-sub">All UBC routes operating normally</div>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '<div class="alerts-label">Service Alerts</div>';
+  for (const a of alerts) {
+    const pills = a.routes.map(r => {
+      const cls = routeClass(r);
+      return `<span class="route-pill ${cls}">${escapeHtml(r)}</span>`;
+    }).join('');
+
+    html += `
+      <div class="alert">
+        <div class="alert-routes">${pills}</div>
+        <div class="alert-header">${escapeHtml(a.header || a.effect || 'Service alert')}</div>
+        ${a.desc ? `<div class="alert-desc">${escapeHtml(a.desc)}</div>` : ''}
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+init();
+</script>
+</body>
+</html>
