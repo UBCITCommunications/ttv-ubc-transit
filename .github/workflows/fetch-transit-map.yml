@@ -1,0 +1,40 @@
+name: Fetch Transit Map Data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'    # every 5 min
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'fetch_transit_map.py'
+      - '.github/workflows/fetch-transit-map.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests gtfs-realtime-bindings protobuf
+
+      - name: Fetch realtime
+        env:
+          TRANSLINK_API_KEY: ${{ secrets.TRANSLINK_API_KEY }}
+        run: python fetch_transit_map.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add transit-live.json
+          git diff --staged --quiet || git commit -m "Update live transit $(date -u +%FT%TZ)"
+          git push
