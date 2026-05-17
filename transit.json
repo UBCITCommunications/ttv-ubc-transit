@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-05-17T17:39:37.138366+00:00",
-  "departures": [],
-  "total_seen": 0
+  "generated_at": "2026-05-17T18:42:17.422938+00:00",
+  "departures": [
+    {
+      "route": "99",
+      "headsign": "Commercial-Broadway Station",
+      "bay": "7",
+      "stop_code": "61935",
+      "eta_unix": 1779043780,
+      "min": 7
+    }
+  ],
+  "total_seen": 2
 }
