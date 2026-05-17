@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-05-17T19:50:19.991993+00:00",
+  "generated_at": "2026-05-17T20:35:57.798018+00:00",
   "departures": [
     {
-      "route": "25",
-      "headsign": "Brentwood Station",
-      "bay": "6",
-      "stop_code": "60164",
-      "eta_unix": 1779048120,
-      "min": 12
+      "route": "68",
+      "headsign": "68 Wesbrook Village",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1779050700,
+      "min": 9
     }
   ],
   "total_seen": 1
