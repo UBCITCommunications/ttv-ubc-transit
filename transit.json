@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-05-17T18:42:17.422938+00:00",
+  "generated_at": "2026-05-17T19:50:19.991993+00:00",
   "departures": [
     {
-      "route": "99",
-      "headsign": "Commercial-Broadway Station",
-      "bay": "7",
-      "stop_code": "61935",
-      "eta_unix": 1779043780,
-      "min": 7
+      "route": "25",
+      "headsign": "Brentwood Station",
+      "bay": "6",
+      "stop_code": "60164",
+      "eta_unix": 1779048120,
+      "min": 12
     }
   ],
-  "total_seen": 2
+  "total_seen": 1
 }
