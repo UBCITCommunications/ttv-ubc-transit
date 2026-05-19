@@ -1,22 +1,5 @@
 {
-  "generated_at": "2026-05-19T14:20:01.272917+00:00",
-  "departures": [
-    {
-      "route": "25",
-      "headsign": "Brentwood Station",
-      "bay": "6",
-      "stop_code": "60164",
-      "eta_unix": 1779201000,
-      "min": 10
-    },
-    {
-      "route": "R4",
-      "headsign": "Joyce Station",
-      "bay": "4",
-      "stop_code": "60162",
-      "eta_unix": 1779201240,
-      "min": 14
-    }
-  ],
-  "total_seen": 4
+  "generated_at": "2026-05-19T17:21:42.066046+00:00",
+  "departures": [],
+  "total_seen": 0
 }
