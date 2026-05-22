@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-05-21T23:59:35.139894+00:00",
+  "generated_at": "2026-05-22T04:11:40.977371+00:00",
   "departures": [
     {
-      "route": "49",
-      "headsign": "Metrotown Station",
-      "bay": "5",
-      "stop_code": "60163",
-      "eta_unix": 1779408420,
-      "min": 7
+      "route": "25",
+      "headsign": "Brentwood Station",
+      "bay": "6",
+      "stop_code": "60164",
+      "eta_unix": 1779423720,
+      "min": 10
     }
   ],
-  "total_seen": 1
+  "total_seen": 2
 }
