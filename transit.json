@@ -1,12 +1,20 @@
 {
-  "generated_at": "2026-05-23T01:20:25.436697+00:00",
+  "generated_at": "2026-05-23T04:52:55.181803+00:00",
   "departures": [
     {
-      "route": "25",
-      "headsign": "Brentwood Station",
-      "bay": "6",
-      "stop_code": "60164",
-      "eta_unix": 1779499620,
+      "route": "84",
+      "headsign": "VCC-Clark Station",
+      "bay": "2",
+      "stop_code": "60159",
+      "eta_unix": 1779512397,
+      "min": 7
+    },
+    {
+      "route": "68",
+      "headsign": "68 Wesbrook Village",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1779512422,
       "min": 7
     }
   ],
