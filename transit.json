@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-05-23T17:39:27.794177+00:00",
-  "departures": [],
-  "total_seen": 0
+  "generated_at": "2026-05-23T18:41:27.282086+00:00",
+  "departures": [
+    {
+      "route": "84",
+      "headsign": "VCC-Clark Station",
+      "bay": "2",
+      "stop_code": "60159",
+      "eta_unix": 1779562760,
+      "min": 18
+    }
+  ],
+  "total_seen": 1
 }
