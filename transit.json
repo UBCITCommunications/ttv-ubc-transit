@@ -1,14 +1,5 @@
 {
-  "generated_at": "2026-05-23T19:49:18.173502+00:00",
-  "departures": [
-    {
-      "route": "33",
-      "headsign": "29th Ave Station",
-      "bay": "1",
-      "stop_code": "60158",
-      "eta_unix": 1779566598,
-      "min": 14
-    }
-  ],
-  "total_seen": 1
+  "generated_at": "2026-05-23T20:35:02.104794+00:00",
+  "departures": [],
+  "total_seen": 0
 }
