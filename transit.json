@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-05-25T17:58:05.210550+00:00",
+  "generated_at": "2026-05-25T19:43:02.049903+00:00",
   "departures": [
     {
-      "route": "49",
-      "headsign": "Metrotown Station",
-      "bay": "5",
-      "stop_code": "60163",
-      "eta_unix": 1779732261,
-      "min": 6
+      "route": "68",
+      "headsign": "68 Wesbrook Village",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1779738900,
+      "min": 12
     }
   ],
   "total_seen": 1
