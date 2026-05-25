@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-05-25T19:43:02.049903+00:00",
+  "generated_at": "2026-05-25T20:51:41.134628+00:00",
   "departures": [
     {
-      "route": "68",
-      "headsign": "68 Wesbrook Village",
-      "bay": "1",
-      "stop_code": "60158",
-      "eta_unix": 1779738900,
-      "min": 12
+      "route": "R4",
+      "headsign": "Joyce Station",
+      "bay": "4",
+      "stop_code": "60162",
+      "eta_unix": 1779742620,
+      "min": 5
     }
   ],
-  "total_seen": 1
+  "total_seen": 2
 }
