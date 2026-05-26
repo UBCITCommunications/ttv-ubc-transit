@@ -1,5 +1,30 @@
 {
-  "generated_at": "2026-05-26T19:36:38.969373+00:00",
-  "departures": [],
-  "total_seen": 1
+  "generated_at": "2026-05-26T21:17:27.117636+00:00",
+  "departures": [
+    {
+      "route": "33",
+      "headsign": "29th Ave Station",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1779830580,
+      "min": 6
+    },
+    {
+      "route": "25",
+      "headsign": "Brentwood Station",
+      "bay": "6",
+      "stop_code": "60164",
+      "eta_unix": 1779830760,
+      "min": 9
+    },
+    {
+      "route": "49",
+      "headsign": "Metrotown Station",
+      "bay": "5",
+      "stop_code": "60163",
+      "eta_unix": 1779831900,
+      "min": 28
+    }
+  ],
+  "total_seen": 3
 }
