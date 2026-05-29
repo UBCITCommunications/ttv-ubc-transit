@@ -1,13 +1,21 @@
 {
-  "generated_at": "2026-05-29T21:59:31.048174+00:00",
+  "generated_at": "2026-05-29T23:19:10.477788+00:00",
   "departures": [
     {
-      "route": "44",
-      "headsign": "44 Downtown Express",
-      "bay": "3",
-      "stop_code": "60160",
-      "eta_unix": 1780092348,
-      "min": 6
+      "route": "99",
+      "headsign": "Commercial-Broadway Station",
+      "bay": "7",
+      "stop_code": "61935",
+      "eta_unix": 1780097040,
+      "min": 5
+    },
+    {
+      "route": "25",
+      "headsign": "Brentwood Station",
+      "bay": "6",
+      "stop_code": "60164",
+      "eta_unix": 1780097220,
+      "min": 8
     }
   ],
   "total_seen": 2
