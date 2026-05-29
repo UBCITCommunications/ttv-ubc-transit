@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-05-29T20:01:03.544512+00:00",
+  "generated_at": "2026-05-29T21:59:31.048174+00:00",
   "departures": [
     {
-      "route": "68",
-      "headsign": "68 Wesbrook Village",
-      "bay": "1",
-      "stop_code": "60158",
-      "eta_unix": 1780085400,
-      "min": 9
+      "route": "44",
+      "headsign": "44 Downtown Express",
+      "bay": "3",
+      "stop_code": "60160",
+      "eta_unix": 1780092348,
+      "min": 6
     }
   ],
   "total_seen": 2
