@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-05-28T23:08:57.806294+00:00",
-  "departures": [],
-  "total_seen": 3
+  "generated_at": "2026-05-29T00:19:41.943178+00:00",
+  "departures": [
+    {
+      "route": "25",
+      "headsign": "Brentwood Station",
+      "bay": "6",
+      "stop_code": "60164",
+      "eta_unix": 1780014620,
+      "min": 11
+    }
+  ],
+  "total_seen": 1
 }
