@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-06-02T12:48:43.648844+00:00",
-  "departures": [],
+  "generated_at": "2026-06-02T17:10:23.593887+00:00",
+  "departures": [
+    {
+      "route": "68",
+      "headsign": "68 Wesbrook Village",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1780421122,
+      "min": 15
+    }
+  ],
   "total_seen": 1
 }
