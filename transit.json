@@ -1,5 +1,22 @@
 {
-  "generated_at": "2026-06-01T22:51:00.860579+00:00",
-  "departures": [],
-  "total_seen": 0
+  "generated_at": "2026-06-02T00:01:30.181354+00:00",
+  "departures": [
+    {
+      "route": "49",
+      "headsign": "Metrotown Station",
+      "bay": "5",
+      "stop_code": "60163",
+      "eta_unix": 1780358820,
+      "min": 6
+    },
+    {
+      "route": "44",
+      "headsign": "44 Downtown Express",
+      "bay": "3",
+      "stop_code": "60160",
+      "eta_unix": 1780358854,
+      "min": 6
+    }
+  ],
+  "total_seen": 4
 }
