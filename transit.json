@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-06-05T17:33:03.649334+00:00",
-  "departures": [],
-  "total_seen": 2
+  "generated_at": "2026-06-05T19:21:09.836031+00:00",
+  "departures": [
+    {
+      "route": "49",
+      "headsign": "Metrotown Station",
+      "bay": "5",
+      "stop_code": "60163",
+      "eta_unix": 1780687740,
+      "min": 8
+    }
+  ],
+  "total_seen": 3
 }
