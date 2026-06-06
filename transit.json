@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-06-06T15:57:02.554673+00:00",
+  "generated_at": "2026-06-06T17:13:00.940589+00:00",
   "departures": [
     {
-      "route": "84",
-      "headsign": "VCC-Clark Station",
-      "bay": "2",
-      "stop_code": "60159",
-      "eta_unix": 1780761733,
-      "min": 5
+      "route": "68",
+      "headsign": "68 Wesbrook Village",
+      "bay": "1",
+      "stop_code": "60158",
+      "eta_unix": 1780766456,
+      "min": 8
     }
   ],
   "total_seen": 2
