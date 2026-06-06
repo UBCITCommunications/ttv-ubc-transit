@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-06-06T11:49:02.763854+00:00",
-  "departures": [],
-  "total_seen": 0
+  "generated_at": "2026-06-06T12:58:08.263457+00:00",
+  "departures": [
+    {
+      "route": "R4",
+      "headsign": "Joyce Station",
+      "bay": "4",
+      "stop_code": "60162",
+      "eta_unix": 1780751013,
+      "min": 5
+    }
+  ],
+  "total_seen": 1
 }
