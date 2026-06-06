@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-06T14:42:36.101614+00:00",
+  "generated_at": "2026-06-06T15:57:02.554673+00:00",
   "departures": [
     {
-      "route": "25",
-      "headsign": "Brentwood Station",
-      "bay": "6",
-      "stop_code": "60164",
-      "eta_unix": 1780757460,
-      "min": 8
+      "route": "84",
+      "headsign": "VCC-Clark Station",
+      "bay": "2",
+      "stop_code": "60159",
+      "eta_unix": 1780761733,
+      "min": 5
     }
   ],
-  "total_seen": 1
+  "total_seen": 2
 }
